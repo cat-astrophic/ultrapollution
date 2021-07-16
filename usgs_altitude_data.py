@@ -48,14 +48,52 @@ for idx in ids:
         states_code.append(ugg.STATE_NUMERIC[0])
         alts.append(np.mean(vals))
 
-# Create a dataframe and save to file
+# Create a dataframe
 
 counties_name = pd.Series(counties_name, name = 'County')
 counties_code = pd.Series(counties_code, name = 'County_Code')
 states_name = pd.Series(states_name, name = 'State')
-states_code = pd.Series(states_code, name = 'FIPS')
-alts = pd.Series(alts, name = 'ALtitude')
-
+states_code = pd.Series(states_code, name = 'State_FIPS')
+alts = pd.Series(alts, name = 'Altitude')
 df = pd.concat([counties_name, counties_code, states_name, states_code, alts], axis = 1)
+
+# Creating county level FIPS codes
+
+def county_fips(st,co):
+    
+    try:
+        
+        if len(str(int(co))) == 1:
+            
+            fip = str(int(st)) + '00' + str(int(co))
+            
+        elif len(str(int(co))) == 2:
+            
+            fip = str(int(st)) + '0' + str(int(co))
+            
+        else:
+            
+            fip = str(int(st)) + str(int(co))
+            
+    except:
+        
+        fip = None
+        
+    return fip
+
+fips = [county_fips(df.State_FIPS[i],df.County_Code[i]) for i in range(len(df))]
+
+# Add fips to df
+
+fips = pd.Series(fips, name = 'FIPS')
+df = pd.concat([df, fips], axis = 1)
+
+# Remove rows for null counties
+
+nullspace = [i for i in range(len(df)) if pd.isnull(df.County[i]) == True]
+df = df.drop(nullspace, axis = 0).reset_index(drop = True)
+
+# Save df to file
+
 df.to_csv(filepath + 'altitude_data.csv', index = False)
 
