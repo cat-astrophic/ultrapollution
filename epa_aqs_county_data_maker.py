@@ -17,7 +17,7 @@ co = pd.read_csv(filepath + 'epa_aqs_data_co.csv')
 no2 = pd.read_csv(filepath + 'epa_aqs_data_no2.csv')
 pb = pd.read_csv(filepath + 'epa_aqs_data_pb.csv')
 o3 = pd.read_csv(filepath + 'epa_aqs_data_ozone.csv')
-#so2 = pd.read_csv(filepath + 'epa_aqs_data_so2.csv')
+so2 = pd.read_csv(filepath + 'epa_aqs_data_so2.csv')
 
 # A FIPS-creating function
 
@@ -44,7 +44,7 @@ def F(s,c):
 
 # Creating the county-pollutant level data sets
 
-sets = [pm, pm10, co, no2, pb, o3]#, so2]
+sets = [pm, pm10, co, no2, pb, o3, so2]
 names = ['pm', 'pm10', 'co', 'no2', 'pb', 'ozone', 'so2']
 
 for i in range(len(sets)):
