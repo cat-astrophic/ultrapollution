@@ -47,7 +47,9 @@ def F(s,c):
 sets = [pm, pm10, co, no2, pb, o3]#, so2]
 names = ['pm', 'pm10', 'co', 'no2', 'pb', 'ozone', 'so2']
 
-for p in sets:
+for i in range(len(sets)):
+    
+    p = sets[i]
     
     dates = []
     states = []
@@ -63,7 +65,7 @@ for p in sets:
         
         for c in county_list:
             
-            print('Pollutant ' + str(sets.index(p)+1) + ' of ' + str(len(sets)) + ' :: State ' + str(state_list.index(s)+1) + ' of 50 :: County ' + str(county_list.index(c)+1) + ' of ' + str(len(county_list)) + '.......') # Visualize progress
+            print('Pollutant ' + str(i+1) + ' of ' + str(len(sets)) + ' :: State ' + str(state_list.index(s)+1) + ' of 50 :: County ' + str(county_list.index(c)+1) + ' of ' + str(len(county_list)) + '.......') # Visualize progress
             tmpc = tmp[tmp.County == c]
             tmp_dates = list(tmpc.Date.unique())
             
@@ -82,5 +84,5 @@ for p in sets:
     fips = pd.Series(fips, name = 'FIPS')
     values = pd.Series(values, name = 'Value')
     df = pd.concat([dates, states, counties, fips, values], axis = 1)
-    df.to_csv(filepath + names[sets.index(p)] + '_data.csv')
+    df.to_csv(filepath + names[i] + '_data.csv', index = False)
 
