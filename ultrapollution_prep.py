@@ -1074,6 +1074,51 @@ pm10_diff = pd.Series(pm10_diff, name = 'PM10_Diff')
 
 ultradata = pd.concat([ultradata, o3_diff, pb_diff, co_diff, no2_diff, pm_diff, pm10_diff], axis = 1)
 
+# Finally, converting time into seconds as a dependent variable
+
+def time_fx(inp):
+    
+    try:
+        
+        if inp == 'nan':
+            
+            secs = None
+            
+        elif len(inp) == 7:
+            
+            h = int(inp[0])
+            m = int(inp[2:4])
+            s = int(inp[5:])
+            secs = s + 60*m + 3600*h
+            
+        elif len(inp) == 8:
+            
+            h = int(inp[0:2])
+            m = int(inp[3:5])
+            s = int(inp[6:])
+            secs = s + 60*m + 3600*h
+            
+        elif len(inp) == 9:
+            
+            h = int(inp[0:3])
+            m = int(inp[4:6])
+            s = int(inp[7:])
+            secs = s + 60*m + 3600*h
+            
+        else:
+            
+            secs = None
+            
+    except:
+        
+        secs = None
+        
+    return secs
+
+times = [time_fx(str(t)) for t in ultradata.Time]
+times = pd.Series(times, name = 'Seconds')
+ultradata = pd.concat([ultradata, times], axis = 1)
+
 # Writing the final data frame to file
 
 ultradata.to_csv(filepath + 'ultradata.csv', index = False)
