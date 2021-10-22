@@ -57,13 +57,13 @@ event_types_tb <- event_types[c(2,3,5,7,8,9,10,14,24)]
 # Run the main models
 
 modpmd <- lm(log(Seconds) ~ PM2.5 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-            + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-            + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-            + Education_High_School + Education_Some_College + Education_Associates
-            + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+             + Education_High_School + Education_Some_College + Education_Associates
+             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 cov <- vcovHC(modpmd, type = 'HC0')
-hrsepmd <- sqrt(diag(cov))
+hrsepmd <- sqrt(abs(diag(cov)))
 
 modpmt <- lm(log(Distance) ~ PM2.5 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
@@ -72,25 +72,25 @@ modpmt <- lm(log(Distance) ~ PM2.5 + factor(FIPS_Race) + factor(RACE_Name) + fac
              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 cov <- vcovHC(modpmt, type = 'HC0')
-hrsepmt <- sqrt(diag(cov))
+hrsepmt <- sqrt(abs(diag(cov)))
 
 modpm10d <- lm(log(Seconds) ~ PM10 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+               + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 cov <- vcovHC(modpm10d, type = 'HC0')
-hrsepm10d <- sqrt(diag(cov))
+hrsepm10d <- sqrt(abs(diag(cov)))
 
 modpm10t <- lm(log(Distance) ~ PM10 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 cov <- vcovHC(modpm10t, type = 'HC0')
-hrsepm10t <- sqrt(diag(cov))
+hrsepm10t <- sqrt(abs(diag(cov)))
 
 modcod <- lm(log(Seconds) ~ CO + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
@@ -99,7 +99,7 @@ modcod <- lm(log(Seconds) ~ CO + factor(FIPS_Race) + factor(RACE_Name) + factor(
              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 cov <- vcovHC(modcod, type = 'HC0')
-hrsecod <- sqrt(diag(cov))
+hrsecod <- sqrt(abs(diag(cov)))
 
 modcot <- lm(log(Distance) ~ CO + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
@@ -108,25 +108,25 @@ modcot <- lm(log(Distance) ~ CO + factor(FIPS_Race) + factor(RACE_Name) + factor
              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 cov <- vcovHC(modcot, type = 'HC0')
-hrsecot <- sqrt(diag(cov))
+hrsecot <- sqrt(abs(diag(cov)))
 
 modno2d <- lm(log(Seconds) ~ NO2 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 cov <- vcovHC(modno2d, type = 'HC0')
-hrseno2d <- sqrt(diag(cov))
+hrseno2d <- sqrt(abs(diag(cov)))
 
 modno2t <- lm(log(Distance) ~ NO2 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 cov <- vcovHC(modno2t, type = 'HC0')
-hrseno2t <- sqrt(diag(cov))
+hrseno2t <- sqrt(abs(diag(cov)))
 
 modo3d <- lm(log(Seconds) ~ O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
@@ -135,70 +135,70 @@ modo3d <- lm(log(Seconds) ~ O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(
              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 cov <- vcovHC(modo3d, type = 'HC0')
-hrseo3d <- sqrt(diag(cov))
+hrseo3d <- sqrt(abs(diag(cov)))
 
 modo3t <- lm(log(Distance) ~ O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
-
-cov <- vcovHC(modo3t, type = 'HC0')
-hrseo3t <- sqrt(diag(cov))
-
-modalld <- lm(log(Seconds) ~ PM2.5 + PM10 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
-
-cov <- vcovHC(modalld, type = 'HC0')
-hrsealld <- sqrt(diag(cov))
-
-modallt <- lm(log(Distance) ~ PM2.5 + PM10 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
              + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
              + Education_High_School + Education_Some_College + Education_Associates
              + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
-cov <- vcovHC(modallt, type = 'HC0')
-hrseallt <- sqrt(diag(cov))
+cov <- vcovHC(modo3t, type = 'HC0')
+hrseo3t <- sqrt(abs(diag(cov)))
 
-mod41d <- lm(log(Seconds) ~ PM2.5 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
+modalld <- lm(log(Seconds) ~ PM2.5 + PM10 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
               + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
               + Education_High_School + Education_Some_College + Education_Associates
               + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
-cov <- vcovHC(mod41d, type = 'HC0')
-hrse41d <- sqrt(diag(cov))
+cov <- vcovHC(modalld, type = 'HC0')
+hrsealld <- sqrt(abs(diag(cov)))
 
-mod41t <- lm(log(Distance) ~ PM2.5 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
+modallt <- lm(log(Distance) ~ PM2.5 + PM10 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
               + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
               + Education_High_School + Education_Some_College + Education_Associates
               + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
+cov <- vcovHC(modallt, type = 'HC0')
+hrseallt <- sqrt(abs(diag(cov)))
+
+mod41d <- lm(log(Seconds) ~ PM2.5 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
+             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+             + Education_High_School + Education_Some_College + Education_Associates
+             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+
+cov <- vcovHC(mod41d, type = 'HC0')
+hrse41d <- sqrt(abs(diag(cov)))
+
+mod41t <- lm(log(Distance) ~ PM2.5 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
+             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+             + Education_High_School + Education_Some_College + Education_Associates
+             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+
 cov <- vcovHC(mod41t, type = 'HC0')
-hrse41t <- sqrt(diag(cov))
+hrse41t <- sqrt(abs(diag(cov)))
 
 mod42d <- lm(log(Seconds) ~ PM10 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-            + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-            + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-            + Education_High_School + Education_Some_College + Education_Associates
-            + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+             + Education_High_School + Education_Some_College + Education_Associates
+             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 cov <- vcovHC(mod42d, type = 'HC0')
-hrse42d <- sqrt(diag(cov))
+hrse42d <- sqrt(abs(diag(cov)))
 
 mod42t <- lm(log(Distance) ~ PM10 + CO + NO2 + O3 + factor(FIPS_Race) + factor(RACE_Name) + factor(RACE_Month)*factor(RACE_Year)
-            + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
-            + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-            + Education_High_School + Education_Some_College + Education_Associates
-            + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+             + factor(RACE_Distance) + factor(Gender) + Total_Races + RACE_Finisher_Count + In_State
+             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+             + Education_High_School + Education_Some_College + Education_Associates
+             + Education_Bachelors + Education_Graduate + Altitude_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 cov <- vcovHC(mod42t, type = 'HC0')
-hrse42t <- sqrt(diag(cov))
+hrse42t <- sqrt(abs(diag(cov)))
 
 # Results
 
@@ -249,4 +249,24 @@ tmpt <- tmpt[,which(!names(tmpt) %in% c('RACE_Distance'))]
 
 datasummary_skim(tmpd)
 datasummary_skim(tmpt)
+
+# Testing to ensure that the pollution variables are indeed exogenous
+
+# Reading in the matched data set
+
+matches <- read.csv(paste(direc, 'exo_match.csv', sep = ''))
+matches$Year <- floor(matches$Date / 10000)
+matches$Month <- floor((matches$Date - 10000*matches$Year) / 100)
+
+# Running regressions
+
+exo.pm <- lm(PM2.5 ~ Count + factor(Year) + factor(Month) + factor(State), data = matches)
+exo.pm10 <- lm(PM10 ~ Count + factor(Year) + factor(Month) + factor(State), data = matches)
+exo.co <- lm(CO ~ Count + factor(Year) + factor(Month) + factor(State), data = matches)
+exo.no2 <- lm(NO2 ~ Count + factor(Year) + factor(Month) + factor(State), data = matches)
+exo.o3 <- lm(O3 ~ Count + factor(Year) + factor(Month) + factor(State), data = matches)
+
+write.csv(stargazer(exo.pm, exo.pm10, exo.co, exo.no2, exo.o3, omit = c('Constant', 'Year', 'Month', 'State')), paste(direc2, 'endogeneity_test_results.txt', sep = ''))
+
+stargazer(exo.pm, exo.pm10, exo.co, exo.no2, exo.o3, type = 'text', omit = c('Constant','Year', 'Month', 'State'))
 
