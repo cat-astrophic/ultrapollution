@@ -9,6 +9,10 @@ library(jtools)
 library(dplyr)
 library(kableExtra)
 library(modelsummary)
+library(maps)
+library(sf)
+library(tmap)
+library(socviz)
 
 # Specifying directories for data + results
 
@@ -53,6 +57,14 @@ event_types <- event_types[! event_types %in% drop_types]
 
 event_types_db <- event_types[c(1,4,6,11,12,13,15,16,17,18,19,20,21,22,23,25,26,27,28)]
 event_types_tb <- event_types[c(2,3,5,7,8,9,10,14,24)]
+
+# Making sure that no negative pollution values exist
+
+data$PM2.5 <- ifelse(data$PM2.5 < 0, 0, data$PM2.5)
+data$PM10 <- ifelse(data$PM10 < 0, 0, data$PM10)
+data$CO <- ifelse(data$CO < 0, 0, data$CO)
+data$NO2 <- ifelse(data$NO2 < 0, 0, data$NO2)
+data$O3 <- ifelse(data$O3 < 0, 0, data$O3)
 
 # Run the main models
 
@@ -222,10 +234,10 @@ stargazer(modpmt, modpm10t, modcot, modno2t, modo3t, modallt, mod41t, mod42t,
 
 # Writing data for computing t-statistics to file because stargazer did not allow for gazing at the stars in modpmd and modpmt...
 
-write.csv(modpmd$coefficients, paste(direc2, 'modpmd$coefficients.txt', sep = ''), row.names = TRUE)
-write.csv(modpmt$coefficients, paste(direc2, 'modpmt$coefficients.txt', sep = ''), row.names = TRUE)
-write.csv(hrsepmt, paste(direc2, 'hrsepmd.txt', sep = ''), row.names = TRUE)
-write.csv(hrsepmd, paste(direc2, 'hrsepmt.txt', sep = ''), row.names = TRUE)
+write.csv(modpmd2$coefficients, paste(direc2, 'modpmd$coefficients.txt', sep = ''))
+write.csv(modpmt2$coefficients, paste(direc2, 'modpmt$coefficients.txt', sep = ''))
+write.csv(hrsepmd2, paste(direc2, 'hrsepmd.txt', sep = ''))
+write.csv(hrsepmt2, paste(direc2, 'hrsepmt.txt', sep = ''))
 
 # Run the elasticity models
 
@@ -395,10 +407,10 @@ stargazer(modpmt, modpm10t, modcot, modno2t, modo3t, modallt, mod41t, mod42t,
 
 # Writing data for computing t-statistics to file because stargazer did not allow for gazing at the stars in modpmd and modpmt...
 
-write.csv(modpmd$coefficients, paste(direc2, 'modpmd$coefficients_2.txt', sep = ''), row.names = TRUE)
-write.csv(modpmt$coefficients, paste(direc2, 'modpmt$coefficients_2.txt', sep = ''), row.names = TRUE)
-write.csv(hrsepmt, paste(direc2, 'hrsepmd_2.txt', sep = ''), row.names = TRUE)
-write.csv(hrsepmd, paste(direc2, 'hrsepmt_2.txt', sep = ''), row.names = TRUE)
+write.csv(modpmd$coefficients, paste(direc2, 'modpmd$coefficients_2.txt', sep = ''))
+write.csv(modpmt$coefficients, paste(direc2, 'modpmt$coefficients_2.txt', sep = ''))
+write.csv(hrsepmd, paste(direc2, 'hrsepmd_2.txt', sep = ''))
+write.csv(hrsepmt, paste(direc2, 'hrsepmt_2.txt', sep = ''))
 
 # Sweet ass plots-in-table summary statistics
 
@@ -411,14 +423,20 @@ tmp  <- subset(tmp, select = c('Distance', 'Seconds', 'PM2.5', 'PM10', 'CO', 'NO
                                'Altitude', 'Total_Races', 'Overall', 'Age_Place',
                                'Gender_Place', 'RACE_Finisher_Count', 'RACE_Distance'))
 
+names(tmp)[names(tmp) == 'Gender_Female'] <- 'Female'
+names(tmp)[names(tmp) == 'Travel_Distance'] <- 'Travel Distance'
+names(tmp)[names(tmp) == 'In_State'] <- 'In State'
+names(tmp)[names(tmp) == 'Total_Races'] <- 'Total Races'
+names(tmp)[names(tmp) == 'RACE_Finisher_Count'] <- 'Race Finisher Count'
+
 tmpd <- tmp[,which(!names(tmp) %in% c('Distance'))]
 tmpt <- tmp[,which(!names(tmp) %in% c('Seconds'))]
 
 tmpd <- tmpd[which(tmpd$RACE_Distance %in% event_types_db),]
 tmpt <- tmpt[which(tmpt$RACE_Distance %in% event_types_tb),]
 
-tmpd <- tmpd[,which(!names(tmpd) %in% c('RACE_Distance'))]
-tmpt <- tmpt[,which(!names(tmpt) %in% c('RACE_Distance'))]
+tmpd <- tmpd[,which(!names(tmpd) %in% c('RACE_Distance', 'Gender_Place', 'Age', 'Overall', 'Age_Place'))]
+tmpt <- tmpt[,which(!names(tmpt) %in% c('RACE_Distance', 'Gender_Place', 'Age', 'Overall', 'Age_Place'))]
 
 datasummary_skim(tmpd)
 datasummary_skim(tmpt)
@@ -442,4 +460,76 @@ exo.o3 <- lm(O3 ~ Count + factor(Year) + factor(Month) + factor(State), data = m
 write.csv(stargazer(exo.pm, exo.pm10, exo.co, exo.no2, exo.o3, omit = c('Constant', 'Year', 'Month', 'State')), paste(direc2, 'endogeneity_test_results.txt', sep = ''))
 
 stargazer(exo.pm, exo.pm10, exo.co, exo.no2, exo.o3, type = 'text', omit = c('Constant','Year', 'Month', 'State'))
+
+# Map making
+
+# Create a figure for runners per county in study window
+
+plotdata <- data %>%
+  group_by(FIPS_Runner) %>%
+  count()
+
+plotdata <- as.data.frame(plotdata)
+names(plotdata)[1] <- 'id'
+
+county_map
+county_map$id <- as.numeric(county_map$id)
+
+plotdata <- left_join(county_map, plotdata, by = 'id')
+
+p1 <- ggplot(data = plotdata, mapping = aes(x = long, y = lat, fill = n, group = group))
+
+p2 <- p1 + geom_polygon(color = NA)
+
+p3 <- p2 + ggtitle('Number of Runners per County')
+
+p4 <- p3 + theme(plot.title = element_text(hjust = 0.5))
+
+p5 <- p4 + theme(axis.title.x = element_blank(),
+                 axis.text.x = element_blank(),
+                 axis.ticks.x = element_blank(),
+                 axis.title.y = element_blank(),
+                 axis.text.y = element_blank(),
+                 axis.ticks.y = element_blank())
+
+p6 <- p5 + labs(fill = 'Runners')
+
+p7 <- p6 + scale_fill_distiller(palette = 'RdYlGn')
+
+# Create a figure for events per county in study window
+
+plotdata2 <- data %>%
+  group_by(FIPS_Race) %>%
+  count(RACE_ID)
+
+plotdata2 <- plotdata2 %>%
+  group_by(FIPS_Race) %>%
+  count()
+
+plotdata2 <- as.data.frame(plotdata2)
+names(plotdata2)[1] <- 'id'
+
+county_map
+county_map$id <- as.numeric(county_map$id)
+
+plotdata2 <- left_join(county_map, plotdata2, by = 'id')
+
+pp1 <- ggplot(data = plotdata2, mapping = aes(x = long, y = lat, fill = n, group = group))
+
+pp2 <- pp1 + geom_polygon(color = NA)
+
+pp3 <- pp2 + ggtitle('Number of Races per County')
+
+pp4 <- pp3 + theme(plot.title = element_text(hjust = 0.5))
+
+pp5 <- pp4 + theme(axis.title.x = element_blank(),
+                 axis.text.x = element_blank(),
+                 axis.ticks.x = element_blank(),
+                 axis.title.y = element_blank(),
+                 axis.text.y = element_blank(),
+                 axis.ticks.y = element_blank())
+
+pp6 <- pp5 + labs(fill = 'Races')
+
+pp7 <- pp6 + scale_fill_distiller(palette = 'YlOrRd')
 
