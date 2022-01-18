@@ -113,10 +113,11 @@ temps_clean = [bad_spaces_go_bye_bye(x) for x in temps]
 # Make a dataframe
 
 s = pd.Series(stations, name = 'Station')
+d = pd.Series(dates, name = 'Date')
 la = pd.Series(lats, name = 'Latitude')
 lo = pd.Series(longs, name = 'Longitude')
 p = pd.Series(preps_clean, name = 'Precipitation')
-df = pd.concat([s,la,lo,p], axis = 1)
+df = pd.concat([s,d,la,lo,p], axis = 1)
 
 # Remove some bad entries
 
