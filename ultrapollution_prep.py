@@ -4,6 +4,8 @@
 
 import pandas as pd
 from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
+import addfips
 
 # Specifying the path to the data -- update this accordingly!
 
@@ -795,16 +797,6 @@ alts = pd.Series(alts, name = 'Altitude')
 alts_home = pd.Series(alts_home, name = 'Altitude_Home')
 ultradata = pd.concat([ultradata, alts, alts_home], axis = 1)
 
-
-
-
-
-
-
-
-
-
-
 # Reading in the pollution data
 
 ozone_raw = pd.read_csv(filepath[:len(filepath)-11] + 'ozone_data.csv')
@@ -1074,7 +1066,7 @@ pm10_diff = pd.Series(pm10_diff, name = 'PM10_Diff')
 
 ultradata = pd.concat([ultradata, o3_diff, pb_diff, co_diff, no2_diff, pm_diff, pm10_diff], axis = 1)
 
-# Finally, converting time into seconds as a dependent variable
+# Converting time into seconds as a dependent variable
 
 def time_fx(inp):
     
@@ -1118,6 +1110,137 @@ def time_fx(inp):
 times = [time_fx(str(t)) for t in ultradata.Time]
 times = pd.Series(times, name = 'Seconds')
 ultradata = pd.concat([ultradata, times], axis = 1)
+
+# Reading in the NOAA data
+
+noaa = pd.read_csv(filepath + 'NOAA.csv')
+
+# Reverse engineering FIPS from coordinates of stations using geopy
+
+geolocator = Nominatim(user_agent = 'geoapiExercises')
+af = addfips.AddFIPS()
+
+noaa_fips = []
+unique_noaa_lats = list(noaa.Latitude.unique())
+unique_noaa_longs = list(noaa.Longitude.unique())
+
+for i in range(len(unique_noaa_lats)):
+    
+    location = geolocator.reverse(str(unique_noaa_lats[i]) + ',' + str(unique_noaa_longs[i]))
+    
+    try:
+        
+        noaa_fips.append(af.get_county_fips(location.raw['address']['county'], state = location.raw['address']['state']))
+        
+    except:
+        
+        noaa_fips.append(None)
+    
+n_fips = []
+
+for i in range(len(noaa)):
+    
+    idx = unique_noaa_lats.index(noaa.Latitude[i])
+    n_fips.append(noaa_fips[idx])
+
+noaa = pd.concat([noaa, pd.Series(n_fips, name = 'FIPS')], axis = 1)
+
+# Creating precipitation variables from the NOAA data
+
+def race_date(inp):
+    
+    mos = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    racedate = str(inp.RACE_Year)
+    
+    if mos.index(inp.RACE_Month) < 9:
+        
+        racedate = racedate + str('0') + str(mos.index(inp.RACE_Month)+1)
+        
+    else:
+        
+        racedate = racedate + str(mos.index(inp.RACE_Month)+1)
+        
+    if inp.RACE_Date < 10:
+        
+        racedate = int(racedate + str('0') + str(inp.RACE_Date))
+        
+    else:
+        
+        racedate = int(racedate + str(inp.RACE_Date))
+    
+    return racedate
+
+def race_fips_fixer(f):
+    
+    try:
+        
+        f = str(int(f))
+        
+        if len(f) == 4:
+            
+            f = '0' + f
+            
+        if len(f) == 3:
+            
+            f = '00' + f
+            
+    except:
+        
+        pass
+        
+    return f
+
+precip_cont = []
+
+race_fips = list(ultradata.FIPS_Race.unique())
+race_fips = [race_fips_fixer(r) for r in race_fips]
+race_dates = list(pd.Series([race_date(ultradata.iloc[i]) for i in range(len(ultradata))]).unique())
+n_dates = list(noaa.Date)
+new_dates = [int(n.replace('-','')) for n in n_dates]
+noaa = pd.concat([noaa, pd.Series(new_dates, name = 'Date2')], axis = 1).reset_index(drop = True)
+noaa = noaa[noaa.Date2.isin(race_dates)].reset_index(drop = True)
+noaa = noaa[noaa.FIPS.isin(race_fips)].reset_index(drop = True)
+ddd = ultradata[ultradata.FIPS_Race > 0].reset_index(drop = True)
+ultra_indices = list(ddd.index)
+
+for i in range(len(ddd)):
+    
+    tmp = noaa[noaa.FIPS == race_fips_fixer(ddd.FIPS_Race[i])]
+    tmp = tmp[tmp.Date2 == race_date(ddd.iloc[i])]
+        
+    try:
+        
+        if len(tmp) > 0:
+            
+            tmp = tmp.reset_index(drop = True)
+            precip_cont.append(tmp.Precipitation[0])
+            
+        else:
+            
+            precip_cont.append(None)
+            
+    except:
+        
+        precip_cont.append(None)
+
+precip_bin = [min(1,p) if p != None else None for p in precip_cont]
+
+pc1 = []
+pc2 = []
+
+for i in range(len(ultradata)):
+    
+    if i in ultra_indices:
+        
+        pc1.append(precip_cont[ultra_indices.index(i)])
+        pc2.append(precip_bin[ultra_indices.index(i)])
+        
+    else:
+        
+        pc1.append(None)
+        pc2.append(None)
+
+ultradata = pd.concat([ultradata, pd.Series(pc1, name = 'Precipitation'), pd.Series(pc2, name = 'Precipitation_Any')], axis = 1)
 
 # Writing the final data frame to file
 
