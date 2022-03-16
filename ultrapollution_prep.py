@@ -5,7 +5,6 @@
 import pandas as pd
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
-import addfips
 
 # Specifying the path to the data -- update this accordingly!
 
@@ -1113,134 +1112,214 @@ ultradata = pd.concat([ultradata, times], axis = 1)
 
 # Reading in the NOAA data
 
-noaa = pd.read_csv(filepath + 'NOAA.csv')
+# Reading in the annual us noaa data files
 
-# Reverse engineering FIPS from coordinates of stations using geopy
+n10 = pd.read_csv('F:/NOAA/us_data/NOAA_2010.csv')
+n11 = pd.read_csv('F:/NOAA/us_data/NOAA_2011.csv')
+n12 = pd.read_csv('F:/NOAA/us_data/NOAA_2012.csv')
+n13 = pd.read_csv('F:/NOAA/us_data/NOAA_2013.csv')
+n14 = pd.read_csv('F:/NOAA/us_data/NOAA_2014.csv')
+n15 = pd.read_csv('F:/NOAA/us_data/NOAA_2015.csv')
+n16 = pd.read_csv('F:/NOAA/us_data/NOAA_2016.csv')
+n17 = pd.read_csv('F:/NOAA/us_data/NOAA_2017.csv')
+n18 = pd.read_csv('F:/NOAA/us_data/NOAA_2018.csv')
+n19 = pd.read_csv('F:/NOAA/us_data/NOAA_2019.csv')
+n20 = pd.read_csv('F:/NOAA/us_data/NOAA_2020.csv')
+
+# Building race-day level weather data set
 
 geolocator = Nominatim(user_agent = 'geoapiExercises')
-af = addfips.AddFIPS()
 
-noaa_fips = []
-unique_noaa_lats = list(noaa.Latitude.unique())
-unique_noaa_longs = list(noaa.Longitude.unique())
+rlocs = [ultradata.RACE_City[i] + ', ' + ultradata.RACE_State[i] for i in range(len(ultradata))]
+ulocs = list(pd.Series(rlocs).unique())
 
-for i in range(len(unique_noaa_lats)):
-    
-    location = geolocator.reverse(str(unique_noaa_lats[i]) + ',' + str(unique_noaa_longs[i]))
+unique_coords = []
+
+for u in ulocs:
     
     try:
         
-        noaa_fips.append(af.get_county_fips(location.raw['address']['county'], state = location.raw['address']['state']))
+        addy = geolocator.geocode(u)
+        unique_coords.append((addy.latitude, addy.longitude))
         
     except:
         
-        noaa_fips.append(None)
-    
-n_fips = []
+        unique_coords.append(None)
 
-for i in range(len(noaa)):
-    
-    idx = unique_noaa_lats.index(noaa.Latitude[i])
-    n_fips.append(noaa_fips[idx])
+nxy = n20[['STATION', 'LATITUDE', 'LONGITUDE']].drop_duplicates().reset_index(drop = True)
+n_coords = [(nxy.LATITUDE[i], nxy.LONGITUDE[i]) for i in range(len(nxy))]
 
-noaa = pd.concat([noaa, pd.Series(n_fips, name = 'FIPS')], axis = 1)
+umatches = [] # these are the NOAA stations
+umatch_dists = []
 
-# Creating precipitation variables from the NOAA data
-
-def race_date(inp):
+for u in unique_coords:
     
-    mos = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-    racedate = str(inp.RACE_Year)
+    dists = [geodesic(u, nc).mi for nc in n_coords]
+    mindx = dists.index(min(dists))
     
-    if mos.index(inp.RACE_Month) < 9:
+    try:
         
-        racedate = racedate + str('0') + str(mos.index(inp.RACE_Month)+1)
+        umatches.append(nxy.STATION[mindx])
+        umatch_dists.append(min(dists))
+        
+    except:
+        
+        umatches.append(None)
+        umatch_dists.append(99999)
+
+def race_date_fxn(entry):
+    
+    month_list = ['HEHE.IM.LAZY', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+    day = entry.RACE_Date
+    month = entry.RACE_Month
+    year = entry.RACE_Year
+    month = month_list.index(month)
+    
+    if day < 10:
+        
+        day = '0' + str(day)
+        
+    if month < 10:
+        
+        month = '0' + str(month)
+        
+    returnable = str(year) + '-' + str(month) + '-' + str(day)
+    
+    return returnable
+
+unique_events = list(ultradata.RACE_ID.unique())
+
+unique_event_dates = []
+
+for u in unique_events:
+    
+    tmp = ultradata[ultradata.RACE_ID == u].reset_index(drop = True)
+    unique_event_dates.append(race_date_fxn(tmp.iloc[0]))
+    
+nx = pd.concat([n10, n11, n12, n13, n14, n15, n16, n17, n18, n19, n20], axis = 0).reset_index(drop = True)
+
+unique_event_to_umatches_map = []
+
+for u in range(len(unique_events)):
+    
+    tmp = ultradata[ultradata.RACE_ID == unique_events[u]].reset_index(drop = True)
+    loc = tmp.RACE_City[0] + ', ' + tmp.RACE_State[0]
+    idx = ulocs.index(loc)
+    unique_event_to_umatches_map.append(idx)
+
+temps = []
+maxs = []
+mins = []
+precip = []
+winds = []
+dewps = []
+
+for i in range(len(unique_events)):
+    print(i)
+    ntmp = nx[nx.STATION == umatches[unique_event_to_umatches_map[i]]]
+    ntmp = ntmp[ntmp.DATE == unique_event_dates[i]].reset_index(drop = True)
+    
+    if len(ntmp) > 0:
+        
+        temps.append(ntmp.TEMP[0])
+        maxs.append(ntmp.MAX[0])
+        mins.append(ntmp.MIN[0])
+        precip.append(ntmp.PRCP[0])
+        winds.append(ntmp.WDSP[0])
+        dewps.append(ntmp.DEWP[0])
         
     else:
         
-        racedate = racedate + str(mos.index(inp.RACE_Month)+1)
+        temps.append(None)    
+        maxs.append(None)    
+        mins.append(None)    
+        precip.append(None)    
+        winds.append(None)    
+        dewps.append(None)
+
+def weather_fxn(input_data):
+    
+    if input_data == None:
         
-    if inp.RACE_Date < 10:
+        weather = None
         
-        racedate = int(racedate + str('0') + str(inp.RACE_Date))
+    elif input_data > 200:
+        
+        weather = None
         
     else:
         
-        racedate = int(racedate + str(inp.RACE_Date))
+        weather = input_data
     
-    return racedate
+    return weather
 
-def race_fips_fixer(f):
+temps2 = [weather_fxn(t) for t in temps]
+maxs2 = [weather_fxn(m) for m in maxs]
+mins2 = [weather_fxn(m) for m in mins]
+precip2 = [weather_fxn(p) for p in precip]
+winds2 = [weather_fxn(w) for w in winds]
+dewps2 = [weather_fxn(d) for d in dewps]
+
+def cfx(input_data):
     
-    try:
+    if input_data == None:
         
-        f = str(int(f))
+        c = None
         
-        if len(f) == 4:
-            
-            f = '0' + f
-            
-        if len(f) == 3:
-            
-            f = '00' + f
-            
-    except:
+    else:
         
-        pass
+        c = (5/9)*(input_data-32)
         
-    return f
+    return c
 
-precip_cont = []
-
-race_fips = list(ultradata.FIPS_Race.unique())
-race_fips = [race_fips_fixer(r) for r in race_fips]
-race_dates = list(pd.Series([race_date(ultradata.iloc[i]) for i in range(len(ultradata))]).unique())
-n_dates = list(noaa.Date)
-new_dates = [int(n.replace('-','')) for n in n_dates]
-noaa = pd.concat([noaa, pd.Series(new_dates, name = 'Date2')], axis = 1).reset_index(drop = True)
-noaa = noaa[noaa.Date2.isin(race_dates)].reset_index(drop = True)
-noaa = noaa[noaa.FIPS.isin(race_fips)].reset_index(drop = True)
-ddd = ultradata[ultradata.FIPS_Race > 0].reset_index(drop = True)
-ultra_indices = list(ddd.index)
-
-for i in range(len(ddd)):
+def humidity_fxn(a,b):
     
-    tmp = noaa[noaa.FIPS == race_fips_fixer(ddd.FIPS_Race[i])]
-    tmp = tmp[tmp.Date2 == race_date(ddd.iloc[i])]
+    if a == None:
         
-    try:
+        humidity = None
         
-        if len(tmp) > 0:
-            
-            tmp = tmp.reset_index(drop = True)
-            precip_cont.append(tmp.Precipitation[0])
-            
-        else:
-            
-            precip_cont.append(None)
-            
-    except:
+    elif b == None:
         
-        precip_cont.append(None)
+        humidity = None
+        
+    else:
+        
+        humidity = 100*(6.11*10)*((7.5*a)/(237.7+a))/(6.11*10)*((7.5*b)/(237.7+b))
+        
+    return humidity
 
-precip_bin = [min(1,p) if p != None else None for p in precip_cont]
+tcs = [cfx(t) for t in temps2]
+tdcs = [cfx(d) for d in dewps2]
+humidities = [humidity_fxn(tcs[i],tdcs[i]) for i in range(len(tcs))]
 
-pc1 = []
-pc2 = []
+tempsx = []
+maxsx = []
+minsx = []
+precipx = []
+windsx = []
+dewpsx = []
+humiditiesx = []
 
 for i in range(len(ultradata)):
     
-    if i in ultra_indices:
-        
-        pc1.append(precip_cont[ultra_indices.index(i)])
-        pc2.append(precip_bin[ultra_indices.index(i)])
-        
-    else:
-        
-        pc1.append(None)
-        pc2.append(None)
+    idx = unique_events.index(ultradata.RACE_ID[i])
+    tempsx.append(temps2[idx])
+    maxsx.append(maxs2[idx])
+    minsx.append(mins2[idx])
+    precipx.append(precip2[idx])
+    windsx.append(winds2[idx])
+    dewpsx.append(dewps2[idx])
+    humiditiesx.append(humidities[idx])
+    
+tempsx = pd.Series(tempsx, name = 'Temperature')
+maxsx = pd.Series(maxsx, name = 'MaxTemp')
+minsx = pd.Series(minsx, name = 'MinTemp')
+precipx = pd.Series(precipx, name = 'Precipitation')
+windsx = pd.Series(windsx, name = 'WindSpeed')
+dewpsx = pd.Series(dewpsx, name = 'DewPoint')
+humiditiesx = pd.Series(humiditiesx, name = 'Humidity')
 
-ultradata = pd.concat([ultradata, pd.Series(pc1, name = 'Precipitation'), pd.Series(pc2, name = 'Precipitation_Any')], axis = 1)
+ultradata = pd.concat([ultradata, tempsx, maxsx, minsx, precipx, windsx, dewpsx, humiditiesx], axis = 1)
 
 # Writing the final data frame to file
 
