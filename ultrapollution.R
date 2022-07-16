@@ -2,7 +2,7 @@
 
 # Specifying the directory for the data and results -- ensure that the directory is correct
 
-username <- 'Michael'
+username <- ''
 direc <- paste('C:/Users/', username, '/Documents/Data/ultrapollution/ultra_data/', sep = '')
 direc2 <- paste('C:/Users/', username, '/Documents/Data/ultrapollution/results/', sep = '')
 
