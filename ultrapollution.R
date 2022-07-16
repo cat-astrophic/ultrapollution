@@ -13,5 +13,4 @@ diRectoRy <- paste('C:/Users/', username, '/Documents/', sep = '')
 # Running the R scripts
 
 source(paste(diRectoRy, 'ultrapollution_complete.R', sep = ''))
-source(paste(diRectoRy, 'ultrapollution_gender.R', sep = ''))
 
