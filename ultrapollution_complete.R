@@ -1056,43 +1056,6 @@ stargazer(xxxmodpmdxx, xxxmodpm10dxx, xxxmodcodxx, xxxmodno2dxx, xxxmodo3dxx, xx
 stargazer(xxxmodpmtxx, xxxmodpm10txx, xxxmodcotxx, xxxmodno2txx, xxxmodo3txx, xxxmodalltxx, xxxmod41txx, xxxmod42txx,
           omit = c('FIPS_Race', 'RACE_Month', 'RACE_Year', 'RACE_Distance'), omit.stat = c('f', 'ser'), type = 'text')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # Sweet ass plots-in-table summary statistics
 
 data$Gender_Female <- as.integer(data$Gender == 'F')
