@@ -27,7 +27,7 @@ data <- read.csv(paste(direc, 'ultradata.csv', sep = ''))
 # See which event types have at least 100 observations
 
 event_types <- c()
-for (d in unique(data$RACE_Distance)) {if (dim(data[which(data$RACE_Distance == d),][1])>100) {event_types <- c(event_types,d)}}
+for (d in unique(data$RACE_Distance)) {if (dim(data[which(data$RACE_Distance == d),])[1]>100) {event_types <- c(event_types,d)}}
 
 # Remove ambiguous event types and sub-ultras from list
 
