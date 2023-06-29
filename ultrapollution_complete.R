@@ -14,6 +14,8 @@ library(sf)
 library(tmap)
 library(socviz)
 library(lmtest)
+library(car)
+library(corrplot)
 
 # Specifying directories for data + results
 
@@ -401,142 +403,142 @@ stargazer(modpmtxx, modpm10txx, modcotxx, modno2txx, modo3txx, modalltxx, mod41t
 # Log-level models
 
 xmodpmd <- lm(log(Seconds+.001) ~ PM2.5*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodpmdx <- coeftest(xmodpmd, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodpmt <- lm(log(Distance+.001) ~ PM2.5*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodpmtx <- coeftest(xmodpmt, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodpm10d <- lm(log(Seconds+.001) ~ PM10*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-               + Education_High_School + Education_Some_College + Education_Associates
-               + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                + Education_High_School + Education_Some_College + Education_Associates
+                + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodpm10dx <- coeftest(xmodpm10d, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodpm10t <- lm(log(Distance+.001) ~ PM10*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-               + Education_High_School + Education_Some_College + Education_Associates
-               + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                + Education_High_School + Education_Some_College + Education_Associates
+                + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodpm10tx <- coeftest(xmodpm10t, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodcod <- lm(log(Seconds+.001) ~ CO*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodcodx <- coeftest(xmodcod, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodcot <- lm(log(Distance+.001) ~ CO*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodcotx <- coeftest(xmodcot, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodno2d <- lm(log(Seconds+.001) ~ NO2*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodno2dx <- coeftest(xmodno2d, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodno2t <- lm(log(Distance+.001) ~ NO2*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodno2tx <- coeftest(xmodno2t, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodo3d <- lm(log(Seconds+.001) ~ O3*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodo3dx <- coeftest(xmodo3d, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodo3t <- lm(log(Distance+.001) ~ O3*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodo3tx <- coeftest(xmodo3t, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodalld <- lm(log(Seconds+.001) ~ PM2.5*factor(Gender) + PM10*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
-              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate  + Altitude_Home
-              + PM2.5_Home + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate  + Altitude_Home
+               + PM2.5_Home + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodalldx <- coeftest(xmodalld, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodallt <- lm(log(Distance+.001) ~ PM2.5*factor(Gender) + PM10*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
+               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home
+               + PM2.5_Home + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+
+xmodalltx <- coeftest(xmodallt, vcov = vcovCL, cluster = ~RACE_Distance)
+
+xmod41d <- lm(log(Seconds+.001) ~ PM2.5*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
               + Education_High_School + Education_Some_College + Education_Associates
               + Education_Bachelors + Education_Graduate + Altitude_Home
-              + PM2.5_Home + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
-
-xmodalltx <- coeftest(xmodallt, vcov = vcovCL, cluster = ~RACE_Distance)
-
-xmod41d <- lm(log(Seconds+.001) ~ PM2.5*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
-             + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home
-             + PM2.5_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+              + PM2.5_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmod41dx <- coeftest(xmod41d, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmod41t <- lm(log(Distance+.001) ~ PM2.5*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
-             + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home
-             + PM2.5_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home
+              + PM2.5_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmod41tx <- coeftest(xmod41t, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmod42d <- lm(log(Seconds+.001) ~ PM10*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
-             + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home
-             + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home
+              + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmod42dx <- coeftest(xmod42d, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmod42t <- lm(log(Distance+.001) ~ PM10*factor(Gender) + CO*factor(Gender) + NO2*factor(Gender) + O3*factor(Gender)
-             + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-             + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-             + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-             + Education_High_School + Education_Some_College + Education_Associates
-             + Education_Bachelors + Education_Graduate + Altitude_Home
-             + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+              + Education_High_School + Education_Some_College + Education_Associates
+              + Education_Bachelors + Education_Graduate + Altitude_Home
+              + PM10_Home + O3_Home + CO_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmod42tx <- coeftest(xmod42t, vcov = vcovCL, cluster = ~RACE_Distance)
 
@@ -559,154 +561,154 @@ stargazer(xmodpmtx, xmodpm10tx, xmodcotx, xmodno2tx, xmodo3tx, xmodalltx, xmod41
 # Log-log models
 
 xmodpmd2 <- lm(log(Seconds+.001) ~ log(PM2.5+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodpmdxx <- coeftest(xmodpmd2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodpmt2 <- lm(log(Distance+.001) ~ log(PM2.5+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + PM2.5_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodpmtxx <- coeftest(xmodpmt2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodpm10d2 <- lm(log(Seconds+.001) ~ log(PM10+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-                + Education_High_School + Education_Some_College + Education_Associates
-                + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+                 + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                 + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                 + Education_High_School + Education_Some_College + Education_Associates
+                 + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodpm10dxx <- coeftest(xmodpm10d2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodpm10t2 <- lm(log(Distance+.001) ~ log(PM10+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-                + Education_High_School + Education_Some_College + Education_Associates
-                + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+                 + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                 + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                 + Education_High_School + Education_Some_College + Education_Associates
+                 + Education_Bachelors + Education_Graduate + Altitude_Home + PM10_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodpm10txx <- coeftest(xmodpm10t2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodcod2 <- lm(log(Seconds+.001) ~ log(CO+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodcodxx <- coeftest(xmodcod2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodcot2 <- lm(log(Distance+.001) ~ log(CO+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + CO_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodcotxx <- coeftest(xmodcot2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodno2d2 <- lm(log(Seconds+.001) ~ log(NO2+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-               + Education_High_School + Education_Some_College + Education_Associates
-               + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                + Education_High_School + Education_Some_College + Education_Associates
+                + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodno2dxx <- coeftest(xmodno2d2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodno2t2 <- lm(log(Distance+.001) ~ log(NO2+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-               + Education_High_School + Education_Some_College + Education_Associates
-               + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                + Education_High_School + Education_Some_College + Education_Associates
+                + Education_Bachelors + Education_Graduate + Altitude_Home + NO2_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodno2txx <- coeftest(xmodno2t2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodo3d2 <- lm(log(Seconds+.001) ~ log(O3+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodo3dxx <- coeftest(xmodo3d2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodo3t2 <- lm(log(Distance+.001) ~ log(O3+.001)*factor(Gender) + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home + O3_Home, data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmodo3txx <- coeftest(xmodo3t2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodalld2 <- lm(log(Seconds+.001) ~ log(PM2.5+.001)*factor(Gender) + log(PM10+.001)*factor(Gender)
-               + log(CO+.001)*factor(Gender) + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
-               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-               + Education_High_School + Education_Some_College + Education_Associates
-               + Education_Bachelors + Education_Graduate + Altitude_Home
-               + PM2.5_Home + PM10_Home + CO_Home + NO2_Home + O3_Home,
-               data = data[which(data$RACE_Distance %in% event_types_db),])
+                + log(CO+.001)*factor(Gender) + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
+                + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                + Education_High_School + Education_Some_College + Education_Associates
+                + Education_Bachelors + Education_Graduate + Altitude_Home
+                + PM2.5_Home + PM10_Home + CO_Home + NO2_Home + O3_Home,
+                data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmodalldxx <- coeftest(xmodalld2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmodallt2 <- lm(log(Distance+.001) ~ log(PM2.5+.001)*factor(Gender) + log(PM10+.001)*factor(Gender)
-               + log(CO+.001)*factor(Gender) + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
+                + log(CO+.001)*factor(Gender) + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
+                + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+                + Education_High_School + Education_Some_College + Education_Associates
+                + Education_Bachelors + Education_Graduate + Altitude_Home
+                + PM2.5_Home + PM10_Home + CO_Home + NO2_Home + O3_Home,
+                data = data[which(data$RACE_Distance %in% event_types_tb),])
+
+xmodalltxx <- coeftest(xmodallt2, vcov = vcovCL, cluster = ~RACE_Distance)
+
+xmod41d2 <- lm(log(Seconds+.001) ~ log(PM2.5+.001)*factor(Gender) + log(CO+.001)*factor(Gender)
+               + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
                + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
                + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
                + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
                + Education_High_School + Education_Some_College + Education_Associates
                + Education_Bachelors + Education_Graduate + Altitude_Home
-               + PM2.5_Home + PM10_Home + CO_Home + NO2_Home + O3_Home,
-               data = data[which(data$RACE_Distance %in% event_types_tb),])
-
-xmodalltxx <- coeftest(xmodallt2, vcov = vcovCL, cluster = ~RACE_Distance)
-
-xmod41d2 <- lm(log(Seconds+.001) ~ log(PM2.5+.001)*factor(Gender) + log(CO+.001)*factor(Gender)
-              + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
-              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home
-              + PM2.5_Home +CO_Home + NO2_Home + O3_Home,
-              data = data[which(data$RACE_Distance %in% event_types_db),])
+               + PM2.5_Home +CO_Home + NO2_Home + O3_Home,
+               data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmod41dxx <- coeftest(xmod41d2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmod41t2 <- lm(log(Distance+.001) ~ log(PM2.5+.001)*factor(Gender) + log(CO+.001)*factor(Gender)
-              + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
-              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home
-              + PM2.5_Home + CO_Home + NO2_Home + O3_Home,
-              data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
+               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home
+               + PM2.5_Home + CO_Home + NO2_Home + O3_Home,
+               data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmod41txx <- coeftest(xmod41t2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmod42d2 <- lm(log(Seconds+.001) ~ log(PM10+.001)*factor(Gender) + log(CO+.001)*factor(Gender)
-              + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
-              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home
-              + PM10_Home + CO_Home + NO2_Home + O3_Home,
-              data = data[which(data$RACE_Distance %in% event_types_db),])
+               + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
+               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home
+               + PM10_Home + CO_Home + NO2_Home + O3_Home,
+               data = data[which(data$RACE_Distance %in% event_types_db),])
 
 xmod42dxx <- coeftest(xmod42d2, vcov = vcovCL, cluster = ~RACE_Distance)
 
 xmod42t2 <- lm(log(Distance+.001) ~ log(PM10+.001)*factor(Gender) + log(CO+.001)*factor(Gender)
-              + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
-              + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
-              + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
-              + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
-              + Education_High_School + Education_Some_College + Education_Associates
-              + Education_Bachelors + Education_Graduate + Altitude_Home
-              + PM10_Home + CO_Home + NO2_Home + O3_Home,
-              data = data[which(data$RACE_Distance %in% event_types_tb),])
+               + log(NO2+.001)*factor(Gender) + log(O3+.001)*factor(Gender)
+               + Temperature*Humidity + Precipitation + WindSpeed + factor(FIPS_Race) + factor(RACE_Month)*factor(RACE_Year)
+               + factor(RACE_Distance) + Total_Races + RACE_Finisher_Count + In_State
+               + Travel_Distance + Ability + Population + Poverty_Rate + Unemployment_Rate + Income
+               + Education_High_School + Education_Some_College + Education_Associates
+               + Education_Bachelors + Education_Graduate + Altitude_Home
+               + PM10_Home + CO_Home + NO2_Home + O3_Home,
+               data = data[which(data$RACE_Distance %in% event_types_tb),])
 
 xmod42txx <- coeftest(xmod42t2, vcov = vcovCL, cluster = ~RACE_Distance)
 
@@ -1105,6 +1107,20 @@ write.csv(stargazer(exo.pm, exo.pm10, exo.co, exo.no2, exo.o3, omit = c('Constan
 
 stargazer(exo.pm, exo.pm10, exo.co, exo.no2, exo.o3, type = 'text', omit = c('Constant','Year', 'Month', 'State'))
 
+# Multicollinearity testing with vif
+
+mtest.d <- lm(log(Seconds+.001) ~ PM2.5 + PM10 + CO  + NO2 + O3, data = data[which(data$RACE_Distance %in% event_types_db),])
+mtest.t <- lm(log(Distance+.001) ~ PM2.5 + PM10 + CO  + NO2 + O3, data = data[which(data$RACE_Distance %in% event_types_tb),])
+
+vif(mtest.d)
+vif(mtest.t)
+
+# Multicollinearity testing with corrplot
+
+poll.data <- data[,c('PM2.5', 'PM10', 'CO', 'NO2', 'O3')]
+poll.data <- poll.data[which(complete.cases(poll.data) == TRUE),]
+corrplot(cor(poll.data), method = 'shade')
+
 # Map making
 
 # Create a figure for runners per county in study window
@@ -1176,4 +1192,3 @@ pp5 <- pp4 + theme(axis.title.x = element_blank(),
 pp6 <- pp5 + labs(fill = 'Races')
 
 pp7 <- pp6 + scale_fill_distiller(palette = 'YlOrRd')
-
