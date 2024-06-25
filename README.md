@@ -1,6 +1,6 @@
 # ultrapollution
 
-this repo is for a project on pollution and physical productivity and gender which is one of my dissertation chapters
+this repo is for a project on pollution and physical productivity and gender which is one of my dissertation chapters - it is currently under review at *JAERE*
 
 the NOAA data comes from [my NOAA weather data repo](https://github.com/cat-astrophic/NOAA)
 
